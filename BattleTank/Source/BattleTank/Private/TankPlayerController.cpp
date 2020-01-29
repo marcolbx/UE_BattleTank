@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
+#include "Tank.h"
 #include "TankPlayerController.h"
 
 void ATankPlayerController::BeginPlay()
@@ -9,11 +10,11 @@ void ATankPlayerController::BeginPlay()
 	auto ControlledTank = GetControlledTank();
 	if (!ControlledTank)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController not possesing a tank"));
+	//	UE_LOG(LogTemp, Warning, TEXT("PlayerController not possesing a tank"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *(ControlledTank->GetName()));
+	//	UE_LOG(LogTemp, Warning, TEXT("%s"), *(ControlledTank->GetName()));
 	}
 }
 
@@ -66,11 +67,18 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 	auto StartLocation = PlayerCameraManager->GetCameraLocation();
 	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
 
+	//debug purposes
+	const static FName TraceTag = TEXT("TraceTag");
+	GetWorld()->DebugDrawTraceTag = TraceTag;
+	const FCollisionQueryParams Params(TraceTag);
+
 	if (GetWorld()->LineTraceSingleByChannel(
 		HitResult,
 		StartLocation,
 		EndLocation,
-		ECollisionChannel::ECC_Visibility)
+		ECollisionChannel::ECC_Camera,
+		Params
+		) //Visibility
 		)
 	{
 		HitLocation = HitResult.Location;
