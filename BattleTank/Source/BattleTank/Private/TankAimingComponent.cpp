@@ -2,6 +2,7 @@
 
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 #include "GameFramework//Actor.h"  //Este include quita el error en GetOwner()
 #include "TankAimingComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -54,7 +55,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!ensure(Barrel)) { return; }
 
@@ -101,3 +102,24 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	Turret->Rotate(DeltaRotator.Yaw);
 }
 
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+	bool isReloaded = FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds;
+	//auto Time = GetWorld()->GetTimeSeconds();
+	//UE_LOG(LogTemp, Warning, TEXT("Fired at %f"), Time);
+
+	if (isReloaded)
+	{
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
+
+
+}
