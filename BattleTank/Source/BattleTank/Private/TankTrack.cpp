@@ -8,11 +8,11 @@ void UTankTrack::SetThrottle(float Throttle)
 	auto Name = GetName();
 	if (*Name == NULL)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("throttle: %f"), Throttle);
+		//UE_LOG(LogTemp, Warning, TEXT("throttle: %f"), Throttle);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s throttle: %f"), *Name, Throttle);
+		//UE_LOG(LogTemp, Warning, TEXT("%s throttle: %f"), *Name, Throttle);
 	}
 
 	auto ForceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForce;
